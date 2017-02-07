@@ -1,15 +1,15 @@
 .PHONY: build
 
 CONTAINERNAME=nvim-env
-IMAGENAME=thornycrackers/neovim
+IMAGENAME=hyshka/neovim
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 build: ## Build the base image
-	docker build -t thornycrackers/shellcheck shellcheck-builder
-	docker run --rm -it -v $(CURDIR):/mnt thornycrackers/shellcheck
-	docker build -t thornycrackers/neovim .
+	docker build -t hyshka/shellcheck shellcheck-builder
+	docker run --rm -it -v $(CURDIR):/mnt hyshka/shellcheck
+	docker build -t hyshka/neovim .
 	docker push $(IMAGENAME)
 
 up: build ## Bring the container up
