@@ -9,6 +9,7 @@ help:
 build: ## Build the base image
 	docker build -t hyshka/shellcheck shellcheck-builder
 	docker run --rm -it -v $(CURDIR):/mnt hyshka/shellcheck
+	git clone https://github.com/hyshka/nvim.git
 	docker build -t hyshka/neovim .
 	docker push $(IMAGENAME)
 

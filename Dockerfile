@@ -74,8 +74,8 @@ COPY package/bin/shellcheck /usr/local/bin/
 COPY package/lib/           /usr/local/lib/
 RUN ldconfig /usr/local/lib
 
-# Download my Neovim Repo
-RUN git clone https://github.com/hyshka/nvim.git /root/.config/nvim
+# Add my Neovim Repo
+ADD nvim /root/.config/nvim
 
 # Install neovim Modules
 RUN nvim +PlugInstall +qall
