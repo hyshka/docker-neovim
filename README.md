@@ -44,6 +44,3 @@ docker run -i -t -P -v "$dir_name":/src thornycrackers/neovim /bin/sh -c "cd /sr
 Now you can run neovim as if you would regularly.
 The only gotcha I've deiscovered so far is that because you are mounting to the docker container you cannot go above the folder you open neovim in.
 This is a pretty rare case in my trials of using this but it is something to note.
-
-## NOTE:
-I do set the git identity to myself inside the Dockerfile so do be aware that you might want to change it to yourself.

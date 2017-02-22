@@ -1,18 +1,10 @@
 FROM alpine:edge
 
-# Add the testing repo to get neovim
-# RUN echo "http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-# RUN echo "http://dl-4.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-
 # Install all the needed packages
 RUN apk add --no-cache \
 	# My Stuff
       bash \
       unibilium \
-      # php5 \
-      # php5-json \
-      # php5-phar \
-      # php5-openssl \
       curl \
       git \
       ack \
@@ -28,25 +20,6 @@ RUN apk add --no-cache \
       gcc \
       # Needed for infocmp and tic
       ncurses
-
-# Download composer and move it to new location
-# RUN curl -sS https://getcomposer.org/installer | php
-# RUN mv composer.phar /usr/local/bin/composer
-
-# Update the path to include composer bins
-# ENV PATH "$PATH:/root/.composer/vendor/bin"
-
-# Composer install Code Sniff
-# RUN composer global require "squizlabs/php_codesniffer=*"
-
-# Install Symfony 2 coding standard
-# RUN composer global require --dev escapestudios/symfony2-coding-standard:~2.0
-
-# Add Symfony 2 coding standard to the phpcs paths
-# RUN phpcs --config-set installed_paths /root/.composer/vendor/escapestudios/symfony2-coding-standard
-
-# Install custom linting
-# ADD PEARish.xml /root/PEARish.xml
 
 # Install python linting and neovim plugin
 RUN python -m ensurepip
