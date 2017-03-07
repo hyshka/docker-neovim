@@ -19,7 +19,9 @@ RUN apk add --no-cache \
       musl-dev \
       gcc \
       # Needed for infocmp and tic
-      ncurses
+      ncurses \
+      # Needed for clipboard
+      xclip
 
 # Install python linting and neovim plugin
 RUN python -m ensurepip
@@ -33,7 +35,7 @@ ADD isort.cfg /root/.isort.cfg
 # Install JS linting modules
 # Install sass linting
 RUN npm install -g \
-      eslint@\^3.14.0 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
+      eslint@\^3.17.1 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
       sass-lint@\^1.10.2
 
 # Install the eslintrc.js
