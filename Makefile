@@ -14,7 +14,7 @@ build_shellcheck: ## Build the shellcheck binaries
 build: build_shellcheck ## Build the base image
 	rm -Rf nvim
 	cp -rL ~/.config/nvim .
-	docker build -t hyshka/neovim .
+	docker build -t $(IMAGENAME) .
 	docker push $(IMAGENAME)
 
 up: build ## Bring the container up

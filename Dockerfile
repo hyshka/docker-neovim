@@ -17,6 +17,8 @@ RUN apk add --no-cache \
       python3 \
       python3-dev \
       nodejs \
+      nodejs-npm \
+      nodejs-doc \
       neovim \
       neovim-doc \
       ctags \
@@ -55,9 +57,7 @@ RUN ldconfig /usr/local/lib
 ########################################
 # Javscript
 ########################################
-# Install nodejs linting
-# Install JS linting modules
-# Install sass linting
+# Setup JS and Sass linting
 RUN npm install -g \
       eslint@\^3.17.1 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
       sass-lint@\^1.10.2
@@ -88,7 +88,5 @@ ADD nvim /root/.config/nvim
 # Install neovim Modules
 RUN nvim +PlugInstall +qall
 RUN nvim +UpdateRemotePlugins +qall
-# Add local vim-options, can override the one inside
-ADD vim-options /root/.config/nvim/plugged/vim-options
 # Add isort config, also changes often
 ADD isort.cfg /root/.isort.cfg
