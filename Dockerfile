@@ -30,6 +30,9 @@ RUN apk add --no-cache \
       ncurses \
       # Needed for clipboard
       xclip
+      # needed for chellcheck binary
+      libc6-compat
+      gmp
 
 
 ########################################
@@ -49,9 +52,9 @@ ADD flake8 /root/.flake8
 ########################################
 
 # Copy over the shellcheck binaries
-COPY package/bin/shellcheck /usr/local/bin/
-COPY package/lib/           /usr/local/lib/
-RUN ldconfig /usr/local/lib
+COPY package/bin/shellcheck /usr/bin/
+COPY package/lib/           /usr/lib/
+RUN ldconfig /usr/lib
 
 
 ########################################
@@ -60,7 +63,7 @@ RUN ldconfig /usr/local/lib
 # Setup JS and Sass linting
 RUN npm install -g \
       eslint@\^3.17.1 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
-      sass-lint@\^1.10.2
+      sass-lint@\^1.10.2 stylint@\^1.5.9
 # Install the eslintrc.js
 ADD eslintrc.js /root/.eslintrc.js
 # Install the sass-lint.yaml

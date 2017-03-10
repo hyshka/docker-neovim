@@ -18,7 +18,7 @@ build: build_shellcheck ## Build the base image
 	docker push $(IMAGENAME)
 
 up: build ## Bring the container up
-	docker run -dP -v $(CURDIR):/app --name $(CONTAINERNAME) $(IMAGENAME) /bin/bash -c 'while true; do echo hi; sleep 1; done;'
+	docker run -dP -v $(CURDIR):/root/app --name $(CONTAINERNAME) $(IMAGENAME) /bin/bash -c 'while true; do echo hi; sleep 1; done;'
 
 down: ## Stop the container
 	docker stop $(CONTAINERNAME) || echo 'No container to stop'
