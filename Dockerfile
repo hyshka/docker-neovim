@@ -29,9 +29,9 @@ RUN apk add --no-cache \
       # Needed for infocmp and tic
       ncurses \
       # Needed for clipboard
-      xclip
+      xclip \
       # needed for chellcheck binary
-      libc6-compat
+      libc6-compat \
       gmp
 
 
@@ -63,11 +63,11 @@ RUN ldconfig /usr/lib
 # Setup JS and Sass linting
 RUN npm install -g \
       eslint@\^3.17.1 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
-      sass-lint@\^1.10.2 stylint@\^1.5.9
+      stylelint@\^7.9.0
 # Install the eslintrc.js
 ADD eslintrc.js /root/.eslintrc.js
-# Install the sass-lint.yaml
-ADD sass-lint.yaml /root/.sass-lint.yaml
+# Install the stylelint config
+ADD stylelintrc /root/.stylelintrc
 
 
 ########################################
