@@ -50,7 +50,6 @@ ADD flake8 /root/.flake8
 ########################################
 # Shellcheck
 ########################################
-
 # Copy over the shellcheck binaries
 COPY package/bin/shellcheck /usr/bin/
 COPY package/lib/           /usr/lib/
@@ -63,11 +62,13 @@ RUN ldconfig /usr/lib
 # Setup JS and Sass linting
 RUN npm install -g \
       eslint@\^3.17.1 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
-      stylelint@\^7.9.0
+      stylelint@\^7.9.0 stylelint-config-recess-order stylelint-order stylelint-scss
 # Install the eslintrc.js
 ADD eslintrc.js /root/.eslintrc.js
 # Install the stylelint config
-ADD stylelintrc /root/.stylelintrc
+ADD stylelint.config.js /root/stylelint.config.js
+# Set Node path to node can resolve globally installed modules
+ENV NODE_PATH /usr/lib/node_modules
 
 
 ########################################

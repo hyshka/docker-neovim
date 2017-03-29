@@ -1,4 +1,4 @@
-{
+const config = {
   "plugins": [
     "stylelint-order",
     "stylelint-scss"
@@ -266,3 +266,9 @@
     "scss\/selector-no-redundant-nesting-selector": true
   }
 }
+
+// see: https://github.com/stylelint/stylelint/issues/1973
+config.extends = config.extends.map(require.resolve);
+
+module.exports = config;
+
