@@ -1,6 +1,6 @@
 .PHONY: build
 
-CONTAINERNAME=nvim-env
+CONTAINERNAME=neovim
 IMAGENAME=hyshka/neovim
 SHELLCHECK_IMAGENAME=hyshka/shellcheck
 
