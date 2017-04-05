@@ -62,7 +62,8 @@ RUN ldconfig /usr/lib
 # Setup JS and Sass linting
 RUN npm install -g \
       eslint@\^3.17.1 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
-      stylelint@\^7.9.0 stylelint-config-recess-order stylelint-order stylelint-scss
+      stylelint@\^7.9.0 stylelint-config-recess-order stylelint-order stylelint-scss \
+      stylefmt@\^1.0.0
 # Install the eslintrc.js
 ADD eslintrc.js /root/.eslintrc.js
 # Install the stylelint config
