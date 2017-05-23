@@ -17,6 +17,12 @@ build: build_shellcheck ## Build the base image
 	docker build -t $(IMAGENAME) .
 	docker push $(IMAGENAME)
 
+build_force: build_shellcheck ## Force build the base image
+	rm -Rf nvim
+	cp -rL ~/.config/nvim .
+	docker build --no-cache -t $(IMAGENAME) .
+	docker push $(IMAGENAME)
+
 up: build ## Bring the container up
 	docker run -dP -v $(CURDIR):/root/app --name $(CONTAINERNAME) $(IMAGENAME) /bin/bash -c 'while true; do echo hi; sleep 1; done;'
 
