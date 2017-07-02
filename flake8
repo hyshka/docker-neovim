@@ -1,6 +1,9 @@
 [flake8]
 exclude =
   migrations,
-    __init__.py,
+  __init__.py,
   settings,
+# I absolutely do not endorse 120 line length however many legacy projects have long lines
+# so I use vim highlighting to higlight the 80 limit and have linting only complain
+# about really long lengths
 max-line-length = 119

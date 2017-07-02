@@ -1,23 +1,19 @@
 .PHONY: build
 
-CONTAINERNAME=neovim
+CONTAINERNAME=nvim-env
 IMAGENAME=hyshka/neovim
-SHELLCHECK_IMAGENAME=hyshka/shellcheck
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-build_shellcheck: ## Build the shellcheck binaries
-	docker build -t $(SHELLCHECK_IMAGENAME) shellcheck-builder
-	docker run --rm -it -v $(CURDIR):/app $(SHELLCHECK_IMAGENAME)
 
-build: build_shellcheck ## Build the base image
+build: ## Build the base image
 	rm -Rf nvim
 	cp -rL ~/.config/nvim .
 	docker build -t $(IMAGENAME) .
 	docker push $(IMAGENAME)
 
-build_force: build_shellcheck ## Force build the base image
+build_force: ## Force build the base image
 	rm -Rf nvim
 	cp -rL ~/.config/nvim .
 	docker build --no-cache -t $(IMAGENAME) .
