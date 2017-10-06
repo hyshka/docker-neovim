@@ -57,9 +57,8 @@ RUN pip3 install neovim jedi flake8 flake8-docstrings flake8-isort flake8-quotes
 
 # Setup JS and Sass linting
 RUN npm install -g \
-  eslint@\^3.17.1 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
-  stylelint@\^7.9.0 stylelint-config-recess-order stylelint-order stylelint-scss \
-  stylefmt@\^5.3.2
+  eslint@\^4.8.0 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
+  stylelint@\^8.2.0 stylelint-config-recess-order stylelint-order stylelint-scss
 
 # Install the eslintrc.js
 ADD eslintrc.js /root/.eslintrc.js
