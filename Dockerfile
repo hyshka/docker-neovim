@@ -22,7 +22,10 @@ RUN apt-get update && apt-get install -y \
   python3-pip \
   ctags \
   shellcheck \
-  netcat-openbsd \
+  netcat \
+  ranger \
+  ack-grep \
+  silversearcher-ag \
   locales
 
 # Generally a good idea to have these, extensions sometimes need them
@@ -48,7 +51,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install python linting and neovim plugin
 RUN pip install neovim jedi flake8 flake8-docstrings flake8-isort flake8-quotes pep8-naming pep257 isort
-RUN pip3 install neovim jedi flake8 flake8-docstrings flake8-isort flake8-quotes pep8-naming pep257 isort
+RUN pip3 install neovim jedi flake8 flake8-docstrings flake8-isort flake8-quotes pep8-naming pep257 isort mypy
 
 
 ########################################
