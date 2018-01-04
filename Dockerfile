@@ -44,6 +44,11 @@ RUN apt-get update && apt-get install -y \
   neovim \
   nodejs
 
+# Install Neovim spellchecker files
+RUN mkdir -p '/root/.local/share/nvim/site/spell'
+RUN curl 'http://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.spl' -o '/root/.local/share/nvim/site/spell/en.utf-8.spl'
+RUN curl 'http://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.sug' -o '/root/.local/share/nvim/site/spell/en.utf-8.sug'
+
 
 ########################################
 # Python
