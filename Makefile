@@ -19,7 +19,7 @@ build_force: ## Force build the base image
 	docker build --no-cache -t $(IMAGENAME) .
 	docker push $(IMAGENAME)
 
-up: build ## Bring the container up
+up: ## Bring the container up
 	docker run -dP -v $(CURDIR):/root/app --name $(CONTAINERNAME) $(IMAGENAME) /bin/bash -c 'while true; do echo hi; sleep 1; done;'
 
 down: ## Stop the container

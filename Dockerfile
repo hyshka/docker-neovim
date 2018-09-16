@@ -1,4 +1,7 @@
-FROM ubuntu:16.04
+FROM nlknguyen/alpine-shellcheck
+# Reset entrypoint from alpine-shellcheck image
+ENTRYPOINT []
+
 MAINTAINER Bryan Hyshka <bryan@hyshka.com>
 
 
@@ -8,41 +11,40 @@ MAINTAINER Bryan Hyshka <bryan@hyshka.com>
 
 # Better terminal support
 ENV TERM screen-256color
-ENV DEBIAN_FRONTEND noninteractive
+
+ENV BUILD_TOOLS "automake autoconf make g++"
 
 # Update and install
-RUN apt-get update && apt-get install -y \
+RUN apk --update add \
+  ${BUILD_TOOLS} \
   bash \
-  curl \
   git \
-  software-properties-common \
-  python-dev \
-  python-pip \
+  curl \
+  sed \
+  less \
+  ncurses \
+  file \
+  # fzf requirement
+  findutils \
+  highlight \
+  python2 \
+  python2-dev \
+  py2-pip \
+  python3 \
   python3-dev \
-  python3-pip \
   ctags \
-  shellcheck \
-  netcat \
-  ranger \
-  ack-grep \
-  silversearcher-ag \
-  locales
-
-# Generally a good idea to have these, extensions sometimes need them
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
-# Add Neovim PPA
-RUN add-apt-repository ppa:neovim-ppa/stable
-# Run script to add nodejs 6 PPA
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash -
-
-# Install custom packages
-RUN apt-get update && apt-get install -y \
+  netcat-openbsd \
+  ack \
+  grep \
+  the_silver_searcher \
   neovim \
   nodejs
+
+# Install ranger
+# Optional deps: less, file, highlight
+RUN git clone https://github.com/ranger/ranger.git && cd ranger && make install && cd .. && rm -rf ranger/
+# Disable mouse support: https://bugs.alpinelinux.org/issues/6839
+RUN sed -i '156s/.*/set mouse_enabled false/' /usr/lib/python2.7/site-packages/ranger/config/rc.conf
 
 # Install Neovim spellchecker files
 RUN mkdir -p '/root/.local/share/nvim/site/spell'
@@ -55,25 +57,33 @@ RUN curl 'http://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.sug' -o '/root/.loca
 ########################################
 
 # Install python linting and neovim plugin
-RUN pip install neovim jedi flake8 flake8-docstrings flake8-isort flake8-quotes pep8-naming pep257 isort
-RUN pip3 install neovim jedi flake8 flake8-docstrings flake8-isort flake8-quotes pep8-naming pep257 isort mypy
+RUN pip install neovim
+RUN pip3 install neovim black
 
 
 ########################################
 # Javscript
 ########################################
 
-# Setup JS and Sass linting
-RUN npm install -g \
-  eslint@\^4.8.0 eslint-config-airbnb-base eslint-plugin-import eslint-plugin-vue \
-  stylelint@\^8.2.0 stylelint-config-recess-order stylelint-order stylelint-scss
-
-# Install the eslintrc.js
-ADD eslintrc.js /root/.eslintrc.js
-# Install the stylelint config
-ADD stylelint.config.js /root/stylelint.config.js
 # Set Node path to node can resolve globally installed modules
 ENV NODE_PATH /usr/lib/node_modules
+
+# Setup JS and Sass linting
+RUN npm install -g \
+  neovim \
+  standard \
+  babel-eslint \
+  eslint-plugin-vue
+
+# Add eslint/standard config
+ADD eslintrc.js /root/.eslintrc.js
+
+
+########################################
+# Clean up
+########################################
+RUN apk del ${BUILD_TOOLS}
+RUN rm -fr /var/apk/caches
 
 
 ########################################
@@ -85,19 +95,19 @@ ADD bashrc /root/.bashrc
 ADD gitconfig /etc/gitconfig
 # Change the workdir, Put it inside root so I can see neovim settings in finder
 WORKDIR /root/app
+
+# Re-construct terminfo file
 # Neovim needs this so that <ctrl-h> can work
+# Requires: ncurses, sed
 RUN infocmp $TERM | sed 's/kbs=^[hH]/kbs=\\177/' > /tmp/$TERM.ti
 RUN tic /tmp/$TERM.ti
+
 # Command for the image
 CMD ["/bin/bash"]
+
 # Add nvim config. Put this last since it changes often
 ADD nvim /root/.config/nvim
-# Install neovim Modules
+
+# # Install neovim Modules
 RUN nvim -i NONE -c PlugInstall -c quitall > /dev/null 2>&1
 RUN nvim -i NONE -c UpdateRemotePlugins -c quitall > /dev/null 2>&1
-# Add flake8 config, don't trigger a long build process
-ADD flake8 /root/.flake8
-# Add local vim-options, can override the one inside
-# ADD vim-options /root/.config/nvim/plugged/vim-options
-# Add isort config, also changes often
-ADD isort.cfg /root/.isort.cfg

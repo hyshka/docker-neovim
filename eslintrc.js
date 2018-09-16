@@ -1,14 +1,9 @@
 module.exports = {
-  'root': true,
-  'extends': 'airbnb-base',
-  'globals': {
-    'window': true,
-    'document': true,
-    'jQuery': false,
-    '$': true,
-    'Foundation': true
-  },
-  'rules': {
-    'max-len': ['error', 120]
+  extends: [
+    'standard',
+    'plugin:vue/recommended'
+  ],
+  parserOptions: {
+    parser: 'babel-eslint'
   }
 }
