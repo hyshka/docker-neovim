@@ -71,12 +71,7 @@ ENV NODE_PATH /usr/lib/node_modules
 # Setup JS and Sass linting
 RUN npm install -g \
   neovim \
-  standard \
-  babel-eslint \
-  eslint-plugin-vue
-
-# Add eslint/standard config
-ADD eslintrc.js /root/.eslintrc.js
+  prettier
 
 
 ########################################
