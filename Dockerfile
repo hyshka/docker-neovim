@@ -1,4 +1,4 @@
-FROM nlknguyen/alpine-shellcheck
+FROM koalaman/shellcheck-alpine
 # Reset entrypoint from alpine-shellcheck image
 ENTRYPOINT []
 
@@ -38,7 +38,8 @@ RUN apk --update add \
   grep \
   the_silver_searcher \
   neovim \
-  nodejs
+  nodejs \
+  npm
 
 # Install ranger
 # Optional deps: less, file, highlight
