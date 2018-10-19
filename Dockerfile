@@ -38,6 +38,7 @@ RUN apk --update add \
   grep \
   the_silver_searcher \
   neovim \
+  neovim-doc \
   nodejs \
   npm
 
