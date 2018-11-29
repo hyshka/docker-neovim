@@ -70,6 +70,10 @@ RUN pip3 install neovim black
 # Set Node path to node can resolve globally installed modules
 ENV NODE_PATH /usr/lib/node_modules
 
+# TODO TEMP FIX: Something in prettier needs this or it blows up
+# Ref: https://github.com/npm/uid-number/issues/3
+RUN npm config set unsafe-perm true
+
 # Setup JS and Sass linting
 RUN npm install -g \
   neovim \
