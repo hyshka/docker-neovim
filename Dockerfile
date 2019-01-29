@@ -40,13 +40,15 @@ RUN apk --update add \
   neovim \
   neovim-doc \
   nodejs \
-  npm
+  npm \
+  # For Youcompleteme
+  cmake
 
 # Install ranger
 # Optional deps: less, file, highlight
-RUN git clone https://github.com/ranger/ranger.git && cd ranger && make install && cd .. && rm -rf ranger/
+RUN git clone https://github.com/ranger/ranger.git && cd ranger && PYTHON=/usr/bin/python3 PREFIX=/usr make install && cd .. && rm -rf ranger/
 # Disable mouse support: https://bugs.alpinelinux.org/issues/6839
-RUN sed -i '156s/.*/set mouse_enabled false/' /usr/lib/python2.7/site-packages/ranger/config/rc.conf
+RUN sed -i '156s/.*/set mouse_enabled false/' /usr/lib/python3.6/site-packages/ranger/config/rc.conf
 
 # Install Neovim spellchecker files
 RUN mkdir -p '/root/.local/share/nvim/site/spell'
@@ -77,13 +79,14 @@ RUN npm config set unsafe-perm true
 # Setup JS and Sass linting
 RUN npm install -g \
   neovim \
-  prettier
+  prettier \
+  git+https://github.com/ramitos/jsctags.git
 
 
 ########################################
 # Clean up
 ########################################
-RUN apk del ${BUILD_TOOLS}
+# RUN apk del ${BUILD_TOOLS}
 RUN rm -fr /var/apk/caches
 
 
@@ -109,6 +112,13 @@ CMD ["/bin/bash"]
 # Add nvim config. Put this last since it changes often
 ADD nvim /root/.config/nvim
 
-# # Install neovim Modules
+# Install neovim Modules
 RUN nvim -i NONE -c PlugInstall -c quitall > /dev/null 2>&1
 RUN nvim -i NONE -c UpdateRemotePlugins -c quitall > /dev/null 2>&1
+
+# Install tern for tagbar plugin
+RUN cd /root/.config/nvim/plugged/tern_for_vim && npm install
+
+# Compile YouCompleteMe and install tsserver for js completion
+RUN cd /root/.config/nvim/plugged/YouCompleteMe && python3 install.py --ts-completer
+RUN cd /root/.config/nvim/plugged/YouCompleteMe/third_party/ycmd && npm install -g --prefix third_party/tsserver typescript
