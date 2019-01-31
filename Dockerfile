@@ -12,7 +12,9 @@ MAINTAINER Bryan Hyshka <bryan@hyshka.com>
 # Better terminal support
 ENV TERM screen-256color
 
-ENV BUILD_TOOLS "automake autoconf make g++"
+ENV BUILD_TOOLS "automake autoconf make g++ gcc musl-dev jansson-dev yaml-dev libxml2-dev"
+
+    
 
 # Update and install
 RUN apk --update add \
@@ -32,7 +34,6 @@ RUN apk --update add \
   py2-pip \
   python3 \
   python3-dev \
-  ctags \
   netcat-openbsd \
   ack \
   grep \
@@ -42,7 +43,9 @@ RUN apk --update add \
   nodejs \
   npm \
   # For Youcompleteme
-  cmake
+  cmake \
+  # For uctags
+  jansson yaml libxml2
 
 # Install ranger
 # Optional deps: less, file, highlight
@@ -54,6 +57,16 @@ RUN sed -i '156s/.*/set mouse_enabled false/' /usr/lib/python3.6/site-packages/r
 RUN mkdir -p '/root/.local/share/nvim/site/spell'
 RUN curl 'http://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.spl' -o '/root/.local/share/nvim/site/spell/en.utf-8.spl'
 RUN curl 'http://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.sug' -o '/root/.local/share/nvim/site/spell/en.utf-8.sug'
+
+# Install universal-ctags
+RUN \
+  git clone http://github.com/universal-ctags/ctags.git ~/ctags && \
+  cd ~/ctags && \
+  ./autogen.sh && \
+  ./configure --program-prefix=u && \
+  make && make install && \
+  # cleanup
+  cd ~ && rm -rf ctags
 
 
 ########################################
@@ -79,8 +92,12 @@ RUN npm config set unsafe-perm true
 # Setup JS and Sass linting
 RUN npm install -g \
   neovim \
-  prettier \
-  git+https://github.com/ramitos/jsctags.git
+  prettier
+
+# TODO: setup new linters
+# Stylelint
+# eslint-prettier config
+# vls for vue?
 
 
 ########################################
@@ -115,9 +132,6 @@ ADD nvim /root/.config/nvim
 # Install neovim Modules
 RUN nvim -i NONE -c PlugInstall -c quitall > /dev/null 2>&1
 RUN nvim -i NONE -c UpdateRemotePlugins -c quitall > /dev/null 2>&1
-
-# Install tern for tagbar plugin
-RUN cd /root/.config/nvim/plugged/tern_for_vim && npm install
 
 # Compile YouCompleteMe and install tsserver for js completion
 RUN cd /root/.config/nvim/plugged/YouCompleteMe && python3 install.py --ts-completer
