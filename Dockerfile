@@ -12,9 +12,7 @@ MAINTAINER Bryan Hyshka <bryan@hyshka.com>
 # Better terminal support
 ENV TERM screen-256color
 
-ENV BUILD_TOOLS "automake autoconf make g++ gcc musl-dev jansson-dev yaml-dev libxml2-dev"
-
-    
+ENV BUILD_TOOLS "automake autoconf make g++ gcc cmake musl-dev jansson-dev yaml-dev libxml2-dev"
 
 # Update and install
 RUN apk --update add \
@@ -42,8 +40,6 @@ RUN apk --update add \
   neovim-doc \
   nodejs \
   npm \
-  # For Youcompleteme
-  cmake \
   # For uctags
   jansson yaml libxml2
 
@@ -101,13 +97,6 @@ RUN npm install -g \
 
 
 ########################################
-# Clean up
-########################################
-# RUN apk del ${BUILD_TOOLS}
-RUN rm -fr /var/apk/caches
-
-
-########################################
 # Personalizations
 ########################################
 # Add some aliases
@@ -134,5 +123,11 @@ RUN nvim -i NONE -c PlugInstall -c quitall > /dev/null 2>&1
 RUN nvim -i NONE -c UpdateRemotePlugins -c quitall > /dev/null 2>&1
 
 # Compile YouCompleteMe and install tsserver for js completion
-RUN cd /root/.config/nvim/plugged/YouCompleteMe && python3 install.py --ts-completer
-RUN cd /root/.config/nvim/plugged/YouCompleteMe/third_party/ycmd && npm install -g --prefix third_party/tsserver typescript
+# RUN cd /root/.config/nvim/plugged/YouCompleteMe && python3 install.py --ts-completer
+# RUN cd /root/.config/nvim/plugged/YouCompleteMe/third_party/ycmd && npm install -g --prefix third_party/tsserver typescript
+
+########################################
+# Clean up
+########################################
+RUN apk del ${BUILD_TOOLS}
+RUN rm -fr /var/apk/caches
