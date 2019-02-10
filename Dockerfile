@@ -1,9 +1,5 @@
-FROM koalaman/shellcheck-alpine
-# Reset entrypoint from alpine-shellcheck image
-ENTRYPOINT []
-
+FROM debian:sid
 MAINTAINER Bryan Hyshka <bryan@hyshka.com>
-
 
 ########################################
 # System Stuff
@@ -11,58 +7,39 @@ MAINTAINER Bryan Hyshka <bryan@hyshka.com>
 
 # Better terminal support
 ENV TERM screen-256color
-
-ENV BUILD_TOOLS "automake autoconf make g++ gcc cmake musl-dev jansson-dev yaml-dev libxml2-dev"
+ENV DEBIAN_FRONTEND noninteractive
 
 # Update and install
-RUN apk --update add \
-  ${BUILD_TOOLS} \
+RUN apt-get update && apt-get install -y \
+  htop \
   bash \
   git \
   curl \
-  sed \
-  less \
-  ncurses \
-  file \
-  # fzf requirement
-  findutils \
-  highlight \
-  python2 \
-  python2-dev \
-  py2-pip \
-  python3 \
-  python3-dev \
+  wget \
   netcat-openbsd \
-  ack \
-  grep \
-  the_silver_searcher \
-  neovim \
-  neovim-doc \
+  silversearcher-ag \
+  shellcheck \
+  python \
+  python-pip \
+  python3 \
+  python3-pip \
   nodejs \
   npm \
-  # For uctags
-  jansson yaml libxml2
+  # ranger + optional deps
+  ranger highlight \
+  # ctags-universal
+  universal-ctags
 
-# Install ranger
-# Optional deps: less, file, highlight
-RUN git clone https://github.com/ranger/ranger.git && cd ranger && PYTHON=/usr/bin/python3 PREFIX=/usr make install && cd .. && rm -rf ranger/
-# Disable mouse support: https://bugs.alpinelinux.org/issues/6839
-RUN sed -i '156s/.*/set mouse_enabled false/' /usr/lib/python3.6/site-packages/ranger/config/rc.conf
+# Generally a good idea to have these, extensions sometimes need them
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 # Install Neovim spellchecker files
 RUN mkdir -p '/root/.local/share/nvim/site/spell'
 RUN curl 'http://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.spl' -o '/root/.local/share/nvim/site/spell/en.utf-8.spl'
 RUN curl 'http://ftp.vim.org/pub/vim/runtime/spell/en.utf-8.sug' -o '/root/.local/share/nvim/site/spell/en.utf-8.sug'
-
-# Install universal-ctags
-RUN \
-  git clone http://github.com/universal-ctags/ctags.git ~/ctags && \
-  cd ~/ctags && \
-  ./autogen.sh && \
-  ./configure --program-prefix=u && \
-  make && make install && \
-  # cleanup
-  cd ~ && rm -rf ctags
 
 
 ########################################
@@ -120,14 +97,12 @@ ADD nvim /root/.config/nvim
 
 # Install neovim Modules
 RUN nvim -i NONE -c PlugInstall -c quitall > /dev/null 2>&1
-RUN nvim -i NONE -c UpdateRemotePlugins -c quitall > /dev/null 2>&1
-
 # Compile YouCompleteMe and install tsserver for js completion
 # RUN cd /root/.config/nvim/plugged/YouCompleteMe && python3 install.py --ts-completer
 # RUN cd /root/.config/nvim/plugged/YouCompleteMe/third_party/ycmd && npm install -g --prefix third_party/tsserver typescript
 
-########################################
-# Clean up
-########################################
-RUN apk del ${BUILD_TOOLS}
-RUN rm -fr /var/apk/caches
+# Add local vim-options, can override the one inside
+ADD vim-options /root/.config/nvim/plugged/vim-options
+
+# Add ranger config
+ADD rc.conf /root/.config/ranger/rc.conf
