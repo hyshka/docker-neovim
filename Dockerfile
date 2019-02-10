@@ -25,16 +25,16 @@ RUN apt-get update && apt-get install -y \
   python3-pip \
   nodejs \
   npm \
+  neovim \
   # ranger + optional deps
   ranger highlight \
   # ctags-universal
   universal-ctags
 
 # Generally a good idea to have these, extensions sometimes need them
-RUN locale-gen en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+  && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
 
 # Install Neovim spellchecker files
 RUN mkdir -p '/root/.local/share/nvim/site/spell'
